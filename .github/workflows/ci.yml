@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -51,16 +51,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Start docker compose
+      - name: Set up Docker CLI with Compose
         run: |
-          docker-compose up -d
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
+
+      - name: Start docker-compose
+        run: |
+          docker compose up -d
           sleep 15
 
       - name: Run E2E test with curl
         run: curl -f http://localhost:5000 || exit 1
 
       - name: Shutdown docker-compose
-        run: docker-compose down
+        run: docker compose down
 
   push-image:
     runs-on: ubuntu-latest
